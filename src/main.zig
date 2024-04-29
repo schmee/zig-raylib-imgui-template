@@ -10,9 +10,9 @@ pub fn main() !void {
     const screen_width = 1280;
     const screen_height = 600;
 
-    rl.InitWindow(screen_width, screen_height, "raylib / imgui demo");
-    defer rl.CloseWindow();
-    rl.SetTargetFPS(60);
+    rl.initWindow(screen_width, screen_height, "raylib / imgui demo");
+    defer rl.closeWindow();
+    rl.setTargetFPS(60);
 
     c.rlImGuiSetup(true);
     defer c.rlImGuiShutdown();
@@ -51,11 +51,11 @@ pub fn main() !void {
     };
     var camera = camera_default;
 
-    var prev_mouse_position = rl.GetMousePosition();
+    var prev_mouse_position = rl.getMousePosition();
     var capture = false;
 
     // Main loop
-    while (!rl.WindowShouldClose()) {
+    while (!rl.windowShouldClose()) {
         // Game updates
         ball_speed.x = speed * std.math.sign(ball_speed.x);
         ball_speed.y = speed * std.math.sign(ball_speed.y);
@@ -83,29 +83,29 @@ pub fn main() !void {
 
         // Draw Raylib
         {
-            rl.BeginDrawing();
-            defer rl.EndDrawing();
-            rl.ClearBackground(background_color);
+            rl.beginDrawing();
+            defer rl.endDrawing();
+            rl.clearBackground(background_color);
 
             {
-                rl.BeginMode2D(camera);
-                defer rl.EndMode2D();
+                rl.beginMode2D(camera);
+                defer rl.endMode2D();
 
                 const line_thickness = 8;
-                rl.DrawRectangleLinesEx(rect, line_thickness, toRaylibColor(box_color));
-                rl.DrawCircleV(ball_position, @floatFromInt(ball_radius), toRaylibColor(ball_color));
+                rl.drawRectangleLinesEx(rect, line_thickness, toRaylibColor(box_color));
+                rl.drawCircleV(ball_position, @floatFromInt(ball_radius), toRaylibColor(ball_color));
 
                 // Make sure to check that ImGui is not capturing the mouse inputs
                 // before checking mouse inputs in Raylib!
                 capture = z.io.getWantCaptureMouse();
                 if (!capture) {
-                    const mouse_position = rl.GetMousePosition();
+                    const mouse_position = rl.getMousePosition();
                     defer prev_mouse_position = mouse_position;
 
-                    const zoom_delta = rl.GetMouseWheelMove() * 0.01;
+                    const zoom_delta = rl.getMouseWheelMove() * 0.01;
                     if (zoom_delta > 0 or (zoom_delta < 0 and camera.zoom > 0.05))
                         camera.zoom += zoom_delta;
-                    if (rl.IsMouseButtonDown(rl.MouseButton.MOUSE_BUTTON_LEFT)) {
+                    if (rl.isMouseButtonDown(rl.MouseButton.mouse_button_left)) {
                         const delta_x = mouse_position.x - prev_mouse_position.x;
                         const delta_y = mouse_position.y - prev_mouse_position.y;
                         camera.target = rl.Vector2{
@@ -122,12 +122,12 @@ pub fn main() !void {
             };
             for (strs, 2..) |str, i| {
                 const font_size = 24;
-                const text_size = rl.MeasureTextEx(rl.GetFontDefault(), str.ptr, @floatFromInt(font_size), 1).int();
-                const width: i32 = @divFloor(screen_width - text_size.x, 2);
-                const height = screen_height - text_size.y * @as(i32, @intCast(i));
-                rl.DrawText(str, width, height, font_size, rl.RED);
+                const text_size = rl.measureTextEx(rl.getFontDefault(), str, @floatFromInt(font_size), 1);
+                const width: i32 = @divFloor(screen_width - @as(i32, @intFromFloat(text_size.x)), 2);
+                const height = screen_height - @as(i32, @intFromFloat(text_size.y)) * @as(i32, @intCast(i));
+                rl.drawText(str, width, height, font_size, rl.Color.red);
             }
-            rl.DrawFPS(10, screen_height - 30);
+            rl.drawFPS(10, screen_height - 30);
 
             // Draw ImGui
             {
