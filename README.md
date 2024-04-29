@@ -4,7 +4,7 @@ Start building things immediately with [Zig](https://www.ziglang.org), [Raylib](
 
 ## Build
 
-1. Install the latest [Zig master](https://ziglang.org/download/) for your platform.
+1. Install [Zig 0.12.0](https://ziglang.org/download/) for your platform.
 1. Clone this repo.
 1. In the repo folder, run
     - `zig build run` for Debug build.
@@ -12,7 +12,7 @@ Start building things immediately with [Zig](https://www.ziglang.org), [Raylib](
 
 ## Info
 
-This repo is a starter project for Raylib and ImGui, using [rlImGui](https://github.com/raylib-extras/rlImGui/) as the rendering backend for ImGui, and the [raylib.zig](https://github.com/ryupold/raylib.zig) and [zgui](https://github.com/zig-gamedev/zig-gamedev/tree/main/libs/zgui) bindings for Raylib and ImGui respectively. All the libraries are built from source and either vendored or provided through the Zig package manager.
+This repo is a starter project for Raylib and ImGui, using [rlImGui](https://github.com/raylib-extras/rlImGui/) as the rendering backend for ImGui, and the [raylib-zig](https://github.com/Not-Nik/raylib-zig) and [zgui](https://github.com/zig-gamedev/zig-gamedev/tree/main/libs/zgui) bindings for Raylib and ImGui respectively. All the libraries are built from source and either vendored or provided through the Zig package manager.
 
 It targets both users who are unfamiliar with any of Zig, Raylib and ImGui and who want a quick and easy way to get started, without the complication of buiding several C libraries from source, as well experienced users who want to save themselves the trouble of putting together the `build.zig` for all these libraries.
 
@@ -28,6 +28,6 @@ This repo just glues other people's hard work together, so huge thanks and appre
 
 - [Raylib](https://www.raylib.com/)
 - [ImGui](https://github.com/ocornut/imgui)
-- [raylib.zig](https://github.com/ryupold/raylib.zig)
+- [raylib-zig](https://github.com/Not-Nik/raylib-zig)
 - [zgui](https://github.com/zig-gamedev/zig-gamedev/tree/main/libs/zgui)
 - [rlImGui](https://github.com/raylib-extras/rlImGui/)
