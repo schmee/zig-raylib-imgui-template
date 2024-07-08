@@ -4,7 +4,7 @@ Build things immediately with [Zig](https://www.ziglang.org), [Raylib](https://w
 
 ## Build
 
-1. Install [Zig 0.12.0](https://ziglang.org/download/) for your platform.
+1. Install [Zig 0.13.0](https://ziglang.org/download/) for your platform.
 1. Clone this repo.
 1. In the repo folder, run
     - `zig build run` for Debug build.
