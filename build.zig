@@ -6,30 +6,29 @@ pub fn build(b: *std.Build) !void {
 
     const exe = b.addExecutable(.{
         .name = "main",
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
     exe.linkLibCpp();
 
-    const raylib_zig = b.dependency("raylib_zig", .{
+    const raylib_zig = b.dependency("raylib-zig", .{
         .target = target,
         .optimize = optimize,
     });
     const raylib = raylib_zig.module("raylib");
-    const raylib_math = raylib_zig.module("raylib-math");
     const raylib_artifact = raylib_zig.artifact("raylib");
     exe.linkLibrary(raylib_artifact);
     exe.root_module.addImport("raylib", raylib);
-    exe.root_module.addImport("raylib-math", raylib_math);
 
     const zgui = b.dependency("zgui", .{
         .shared = false,
-        .with_implot = true,
+        .with_implot = false,
+        .backend = .no_backend,
     });
     exe.root_module.addImport("zgui", zgui.module("root"));
     exe.linkLibrary(zgui.artifact("imgui"));
-    exe.addIncludePath(.{ .path = "vendor/zgui/libs/imgui" });
+    exe.addIncludePath(b.path("vendor/zgui/libs/imgui"));
 
     const rlimgui = b.dependency("rlimgui", .{
         .target = target,
@@ -38,10 +37,10 @@ pub fn build(b: *std.Build) !void {
     exe.root_module.addCSourceFile(.{
         .file = rlimgui.path("rlImGui.cpp"),
         .flags = &.{
-        "-fno-sanitize=undefined",
-        "-std=c++11",
-        "-Wno-deprecated-declarations",
-        "-DNO_FONT_AWESOME",
+            "-fno-sanitize=undefined",
+            "-std=c++11",
+            "-Wno-deprecated-declarations",
+            "-DNO_FONT_AWESOME",
         },
     });
     exe.addIncludePath(rlimgui.path("."));

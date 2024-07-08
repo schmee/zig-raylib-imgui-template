@@ -4,8 +4,6 @@
 // named parameters and Zig style text formatting.
 //
 //--------------------------------------------------------------------------------------------------
-const te_enabled = @import("zgui_options").with_te;
-//--------------------------------------------------------------------------------------------------
 const std = @import("std");
 const assert = std.debug.assert;
 //--------------------------------------------------------------------------------------------------
@@ -327,7 +325,7 @@ pub const DrawData = *extern struct {
     cmd_lists_count: c_int,
     total_idx_count: c_int,
     total_vtx_count: c_int,
-    cmd_lists: [*]DrawList,
+    cmd_lists: Vector(DrawList),
     display_pos: [2]f32,
     display_size: [2]f32,
     framebuffer_scale: [2]f32,
@@ -659,7 +657,12 @@ pub fn setNextWindowBgAlpha(args: SetNextWindowBgAlpha) void {
     zguiSetNextWindowBgAlpha(args.alpha);
 }
 extern fn zguiSetNextWindowBgAlpha(alpha: f32) void;
-
+//--------------------------------------------------------------------------------------------------
+pub fn setWindowFocus(name: ?[:0]const u8) void {
+    zguiSetWindowFocus(name orelse null);
+}
+extern fn zguiSetWindowFocus(name: ?[*:0]const u8) void;
+//-------------------------------------------------------------------------------------------------
 pub fn setKeyboardFocusHere(offset: i32) void {
     zguiSetKeyboardFocusHere(offset);
 }
@@ -1632,32 +1635,34 @@ pub fn comboFromEnum(
     current_item: anytype,
 ) bool {
     const EnumType = @TypeOf(current_item.*);
-    const enum_type_info = switch (@typeInfo(@TypeOf(current_item.*))) {
+    const enum_type_info = switch (@typeInfo(EnumType)) {
         .Enum => |enum_type_info| enum_type_info,
         else => @compileError("Error: current_item must be a pointer-to-an-enum, not a " ++ @TypeOf(current_item)),
     };
 
+    const FieldNameIndex = std.meta.Tuple(&.{ []const u8, i32 });
     comptime var item_names: [:0]const u8 = "";
-    comptime var enum_to_int = std.EnumArray(EnumType, i32).initUndefined();
-    comptime var int_to_enum: [enum_type_info.fields.len]EnumType = undefined;
+    comptime var field_name_to_index_list: [enum_type_info.fields.len]FieldNameIndex = undefined;
+    comptime var index_to_enum: [enum_type_info.fields.len]EnumType = undefined;
 
     comptime {
         for (enum_type_info.fields, 0..) |f, i| {
             item_names = item_names ++ f.name ++ "\x00";
             const e: EnumType = @enumFromInt(f.value);
-            enum_to_int.set(e, @intCast(i));
-            int_to_enum[i] = e;
+            field_name_to_index_list[i] = .{ f.name, @intCast(i) };
+            index_to_enum[i] = e;
         }
     }
 
-    var item: i32 = enum_to_int.get(current_item.*);
+    const field_name_to_index = std.StaticStringMap(i32).initComptime(&field_name_to_index_list);
+    var item: i32 = field_name_to_index.get(@tagName(current_item.*)).?;
 
     const result = combo(label, .{
         .items_separated_by_zeros = item_names,
         .current_item = &item,
     });
 
-    current_item.* = int_to_enum[@intCast(item)];
+    current_item.* = index_to_enum[@intCast(item)];
 
     return result;
 }
@@ -4515,6 +4520,14 @@ pub const DrawList = *opaque {
     }
     extern fn zguiDrawList_AddResetRenderStateCallback(draw_list: DrawList) void;
 };
+
+fn Vector(comptime T: type) type {
+    return extern struct {
+        len: c_int,
+        capacity: c_int,
+        items: [*]T,
+    };
+}
 
 test {
     const testing = std.testing;
