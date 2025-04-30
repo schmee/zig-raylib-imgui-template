@@ -105,7 +105,7 @@ pub fn main() !void {
                     const zoom_delta = rl.getMouseWheelMove() * 0.01;
                     if (zoom_delta > 0 or (zoom_delta < 0 and camera.zoom > 0.05))
                         camera.zoom += zoom_delta;
-                    if (rl.isMouseButtonDown(rl.MouseButton.mouse_button_left)) {
+                    if (rl.isMouseButtonDown(rl.MouseButton.left)) {
                         const delta_x = mouse_position.x - prev_mouse_position.x;
                         const delta_y = mouse_position.y - prev_mouse_position.y;
                         camera.target = rl.Vector2{
@@ -122,7 +122,7 @@ pub fn main() !void {
             };
             for (strs, 2..) |str, i| {
                 const font_size = 24;
-                const text_size = rl.measureTextEx(rl.getFontDefault(), str, @floatFromInt(font_size), 1);
+                const text_size = rl.measureTextEx(try rl.getFontDefault(), str, @floatFromInt(font_size), 1);
                 const width: i32 = @divFloor(screen_width - @as(i32, @intFromFloat(text_size.x)), 2);
                 const height = screen_height - @as(i32, @intFromFloat(text_size.y)) * @as(i32, @intCast(i));
                 rl.drawText(str, width, height, font_size, rl.Color.red);

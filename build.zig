@@ -12,7 +12,7 @@ pub fn build(b: *std.Build) !void {
     });
     exe.linkLibCpp();
 
-    const raylib_zig = b.dependency("raylib-zig", .{
+    const raylib_zig = b.dependency("raylib_zig", .{
         .target = target,
         .optimize = optimize,
     });
@@ -28,7 +28,6 @@ pub fn build(b: *std.Build) !void {
     });
     exe.root_module.addImport("zgui", zgui.module("root"));
     exe.linkLibrary(zgui.artifact("imgui"));
-    exe.addIncludePath(b.path("vendor/zgui/libs/imgui"));
 
     const rlimgui = b.dependency("rlimgui", .{
         .target = target,
@@ -44,6 +43,7 @@ pub fn build(b: *std.Build) !void {
         },
     });
     exe.addIncludePath(rlimgui.path("."));
+    exe.addIncludePath(zgui.path("libs/imgui"));
 
     b.installArtifact(exe);
 

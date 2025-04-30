@@ -1,16 +1,25 @@
 .{
-    .name = "raylib-imgui-example",
+    .name = .raylib_imgui_example,
     .version = "1.0.0",
-    .paths = .{ "src", "vendor" },
+    .fingerprint = 0xc76ef5a4fb435919, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.14.0",
     .dependencies = .{
-        .@"raylib-zig" = .{
-            .url = "https://github.com/Not-Nik/raylib-zig/archive/19db777449c0f56ca621121a00087d341eb77080.tar.gz",
-            .hash = "1220608d53a1e0e295f8367be3aa7b1439d044af1551ae64cf5ae6ce9edb05858e73",
+        .raylib_zig = .{
+            .url = "git+https://github.com/Not-Nik/raylib-zig?ref=devel#0de5f8aed0565f2dbd8bc6851499c85df9e73534",
+            .hash = "raylib_zig-5.6.0-dev-KE8REGMrBQCs5X69dptNzjw9Z7MYM1fgdaKrnuKf8zyr",
         },
         .rlimgui = .{
-            .url = "https://github.com/raylib-extras/rlImGui/archive/5930d542021a253ac7fef893d7e1536e86a632f8.tar.gz",
-            .hash = "1220d370be5b6aa21c78ba299c5ea91bfcfcc272ce7f0871646c9db2395beee39d89",
+            .url = "https://github.com/raylib-extras/rlImGui/archive/aba659ea01d7c641b9cb2613e5183077a2df1d5c.tar.gz",
+            .hash = "N-V-__8AAAzPXgCzS8V_d3vh0_F6Aa3GZtJ3iG-bU-c-1z9f",
         },
-        .zgui = .{ .path = "vendor/zgui" },
+        .zgui = .{
+            .url = "git+https://github.com/zig-gamedev/zgui.git#0027c0117026df3b98102160bd1ecd476e5b80cc",
+            .hash = "zgui-0.6.0-dev--L6sZG-baAC_aKii9zSGNRzQGz4bdsEi2-SOjAtICP6k",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
     },
 }
